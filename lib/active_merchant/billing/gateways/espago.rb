@@ -1,3 +1,5 @@
+require "espago"
+
 module ActiveMerchant #:nodoc:
   module Billing #:nodoc:
     class EspagoGateway < Gateway
