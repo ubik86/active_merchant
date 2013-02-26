@@ -13,6 +13,7 @@ module ActiveMerchant #:nodoc:
 
       def initialize(options = {})
         #requires!(options, :api_key)
+        configure_client
         super
       end
 
@@ -30,7 +31,12 @@ module ActiveMerchant #:nodoc:
         # add_address(post, creditcard, options)
 
         # commit('charges', post)
-        Response.new(true, "OK", {:paid_amount => money}, :test => true)
+        if creditcard
+          #github.com/espago/espago check documentation also on espago page
+          Espago.charges :post, { :client => "client_id", :card => "card_token", :amount => "value", :currency => "PLN", :description => "description"}
+        else
+          Response.new(true, "OK", {:paid_amount => money}, :test => true)
+        end
       end
 
       # Create a customer and associated credit card. The token that is returned
@@ -152,6 +158,15 @@ module ActiveMerchant #:nodoc:
 
       def post_data(parameters = {})
         parameters.to_json
+      end
+
+      private
+
+      def configure_client
+        Espago.app_id = 'your-espago-app-id'
+        Espago.app_password = 'your-espago-secret'
+        Espago.public_key = 'your-espago-key'
+        Espago.production = false #sets Espago enviroment to sandbox
       end
     end
   end
